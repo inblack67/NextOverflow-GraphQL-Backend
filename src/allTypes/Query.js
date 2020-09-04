@@ -1,30 +1,38 @@
 import { queryType } from '@nexus/schema';
-import { connectDB } from '../connectDB';
+import QuestionModel from '../../models/Question';
 import { isProtected } from '../isAuthenticated';
 import ErrorResponse from '../errorResponse';
 import asyncHanlder from '../../middlewares/asyncHandler';
 import { User } from './User';
 import asyncHandler from '../../middlewares/asyncHandler';
+import { Question } from './Question';
 
 export const Query = queryType({
     definition(t) {
-        t.string('name', {
-            resolve: asyncHanlder(
-                async (parent, args, ctx) => {
-                    return 'Jim Moriarty';
+
+        t.list.field('questions', {
+            type: Question,
+            description: 'Get All Questions',
+            resolve: asyncHandler(
+                async () => {
+                    const questions = await QuestionModel.find();
+                    return questions;
                 }
             )
-        });
+        })
+
         t.field('getMe', {
             type: User,
             description: 'Get Logged In User',
-            resolve: async (parent, args, ctx) => {
-                const isAuthenticated = await isProtected(ctx);
-                if (!isAuthenticated) {
-                    throw new ErrorResponse('Not Auth!', 401);
+            resolve: asyncHandler(
+                async (parent, args, ctx) => {
+                    const isAuthenticated = await isProtected(ctx);
+                    if (!isAuthenticated) {
+                        throw new ErrorResponse('Not Auth!', 401);
+                    }
+                    return ctx.req.user;
                 }
-                return ctx.req.user;
-            }
+            )
         });
 
         t.list.field('users', {

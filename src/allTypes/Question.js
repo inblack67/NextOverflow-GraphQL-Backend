@@ -6,6 +6,7 @@ export const Question = objectType({
         t.id('_id');
         t.string('title');
         t.string('description');
+        t.string('tags');
         t.string('user');
         t.string('createdAt');
     }

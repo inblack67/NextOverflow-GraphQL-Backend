@@ -46,6 +46,7 @@ export interface NexusGenRootTypes {
     _id: string; // ID!
     createdAt: string; // String!
     description: string; // String!
+    tags: string; // String!
     title: string; // String!
     user: string; // String!
   }
@@ -80,19 +81,23 @@ export interface NexusGenFieldTypes {
     user: string; // String!
   }
   Mutation: { // field return type
+    addQuestion: NexusGenRootTypes['Question']; // Question!
+    deleteQuestion: NexusGenRootTypes['Question'] | null; // Question
     login: NexusGenRootTypes['User']; // User!
     logout: NexusGenRootTypes['User'] | null; // User
     register: NexusGenRootTypes['User']; // User!
+    updateQuestion: NexusGenRootTypes['Question'] | null; // Question
   }
   Query: { // field return type
     getMe: NexusGenRootTypes['User']; // User!
-    name: string; // String!
+    questions: NexusGenRootTypes['Question'][]; // [Question!]!
     users: NexusGenRootTypes['User'][]; // [User!]!
   }
   Question: { // field return type
     _id: string; // ID!
     createdAt: string; // String!
     description: string; // String!
+    tags: string; // String!
     title: string; // String!
     user: string; // String!
   }
@@ -107,6 +112,14 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    addQuestion: { // args
+      description?: string | null; // String
+      tags?: string | null; // String
+      title?: string | null; // String
+    }
+    deleteQuestion: { // args
+      id?: string | null; // ID
+    }
     login: { // args
       email?: string | null; // String
       password?: string | null; // String
@@ -115,6 +128,12 @@ export interface NexusGenArgTypes {
       email?: string | null; // String
       name?: string | null; // String
       password?: string | null; // String
+    }
+    updateQuestion: { // args
+      description?: string | null; // String
+      id?: string | null; // ID
+      tags?: string | null; // String
+      title?: string | null; // String
     }
   }
 }

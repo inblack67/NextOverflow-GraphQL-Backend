@@ -17,6 +17,12 @@ type Comment {
 }
 
 type Mutation {
+  """Add Question"""
+  addQuestion(description: String, tags: String, title: String): Question!
+
+  """Delete Question"""
+  deleteQuestion(id: ID): Question
+
   """Login"""
   login(email: String, password: String): User!
 
@@ -25,12 +31,17 @@ type Mutation {
 
   """Register"""
   register(email: String, name: String, password: String): User!
+
+  """Update Question"""
+  updateQuestion(description: String, id: ID, tags: String, title: String): Question
 }
 
 type Query {
   """Get Logged In User"""
   getMe: User!
-  name: String!
+
+  """Get All Questions"""
+  questions: [Question!]!
 
   """GET All Users"""
   users: [User!]!
@@ -40,6 +51,7 @@ type Question {
   _id: ID!
   createdAt: String!
   description: String!
+  tags: String!
   title: String!
   user: String!
 }

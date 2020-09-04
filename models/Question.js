@@ -13,6 +13,11 @@ const QuestionSchema = new Schema({
         required: [true, 'Question description is required'],
         trim: true,
     },
+    tags: {
+        type: String,
+        default: 'programming',
+        trim: true,
+    },
     user: {
         type: Schema.ObjectId,
         ref: 'User',
