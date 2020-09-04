@@ -53,7 +53,7 @@ type Question {
   description: String!
   tags: String!
   title: String!
-  user: String!
+  user: User!
 }
 
 type User {
@@ -62,4 +62,5 @@ type User {
   email: String!
   name: String!
   password: String
+  questions: [Question!]
 }

@@ -2,10 +2,10 @@ import { queryType } from '@nexus/schema';
 import QuestionModel from '../../models/Question';
 import { isProtected } from '../isAuthenticated';
 import ErrorResponse from '../errorResponse';
-import asyncHanlder from '../../middlewares/asyncHandler';
 import { User } from './User';
 import asyncHandler from '../../middlewares/asyncHandler';
 import { Question } from './Question';
+import UserModel from '../../models/User';
 
 export const Query = queryType({
     definition(t) {
@@ -15,7 +15,7 @@ export const Query = queryType({
             description: 'Get All Questions',
             resolve: asyncHandler(
                 async () => {
-                    const questions = await QuestionModel.find();
+                    const questions = await QuestionModel.find().populate('user');
                     return questions;
                 }
             )
@@ -47,7 +47,7 @@ export const Query = queryType({
                         throw new ErrorResponse('Not Auth', 401);
                     }
 
-                    const users = await UserModel.find();
+                    const users = await UserModel.find().populate('questions');
                     return users;
                 }
             )

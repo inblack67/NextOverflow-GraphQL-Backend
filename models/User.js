@@ -27,7 +27,12 @@ const UserSchema = new Schema({
         type: Date,
         default: Date.now()
     },
-});
+},
+    {
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
+    }
+);
 
 UserSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
@@ -38,6 +43,19 @@ UserSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
 
     next();
+});
+
+// cascade delete
+UserSchema.pre('remove', async function (next) {
+    await this.model('Question').deleteMany({ user: this._id });
+    next();
+});
+
+UserSchema.virtual('questions', {
+    ref: 'Question',
+    localField: '_id',
+    foreignField: 'user',
+    justOne: false
 });
 
 

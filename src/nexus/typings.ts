@@ -48,7 +48,7 @@ export interface NexusGenRootTypes {
     description: string; // String!
     tags: string; // String!
     title: string; // String!
-    user: string; // String!
+    user: NexusGenRootTypes['User']; // User!
   }
   User: { // root type
     _id: string; // ID!
@@ -56,6 +56,7 @@ export interface NexusGenRootTypes {
     email: string; // String!
     name: string; // String!
     password?: string | null; // String
+    questions?: NexusGenRootTypes['Question'][] | null; // [Question!]
   }
 }
 
@@ -99,7 +100,7 @@ export interface NexusGenFieldTypes {
     description: string; // String!
     tags: string; // String!
     title: string; // String!
-    user: string; // String!
+    user: NexusGenRootTypes['User']; // User!
   }
   User: { // field return type
     _id: string; // ID!
@@ -107,6 +108,7 @@ export interface NexusGenFieldTypes {
     email: string; // String!
     name: string; // String!
     password: string | null; // String
+    questions: NexusGenRootTypes['Question'][] | null; // [Question!]
   }
 }
 
