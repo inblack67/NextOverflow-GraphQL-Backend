@@ -2,6 +2,52 @@
 ### Do not make changes to this file directly
 
 
+type Answer {
+  _id: ID!
+  content: String!
+  createdAt: String!
+  user: String!
+}
+
+type Comment {
+  _id: ID!
+  content: String!
+  createdAt: String!
+  user: String!
+}
+
+type Mutation {
+  """Login"""
+  login(email: String, password: String): User!
+
+  """Logout"""
+  logout: User
+
+  """Register"""
+  register(email: String, name: String, password: String): User!
+}
+
 type Query {
+  """Get Logged In User"""
+  getMe: User!
   name: String!
+
+  """GET All Users"""
+  users: [User!]!
+}
+
+type Question {
+  _id: ID!
+  createdAt: String!
+  description: String!
+  title: String!
+  user: String!
+}
+
+type User {
+  _id: ID!
+  createdAt: String!
+  email: String!
+  name: String!
+  password: String
 }
