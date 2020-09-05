@@ -56,6 +56,7 @@ export interface NexusGenRootTypes {
   }
   User: { // root type
     _id: string; // ID!
+    answers?: NexusGenRootTypes['Answer'][] | null; // [Answer!]
     createdAt: string; // String!
     email: string; // String!
     name: string; // String!
@@ -120,6 +121,7 @@ export interface NexusGenFieldTypes {
   }
   User: { // field return type
     _id: string; // ID!
+    answers: NexusGenRootTypes['Answer'][] | null; // [Answer!]
     createdAt: string; // String!
     email: string; // String!
     name: string; // String!

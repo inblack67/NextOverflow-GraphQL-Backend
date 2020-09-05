@@ -47,7 +47,7 @@ export const Query = queryType({
             description: 'Get All Questions',
             resolve: asyncHandler(
                 async () => {
-                    const questions = await QuestionModel.find().populate(['user', 'comment']);
+                    const questions = await QuestionModel.find().populate(['user', 'comments']);
                     return questions;
                 }
             )
@@ -79,7 +79,7 @@ export const Query = queryType({
                         throw new ErrorResponse('Not Auth', 401);
                     }
 
-                    const users = await UserModel.find().populate('question');
+                    const users = await UserModel.find().populate(['questions', 'answers']);
                     return users;
                 }
             )

@@ -86,6 +86,7 @@ type Question {
 
 type User {
   _id: ID!
+  answers: [Answer!]
   createdAt: String!
   email: String!
   name: String!
