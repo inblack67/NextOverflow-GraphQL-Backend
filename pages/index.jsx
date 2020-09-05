@@ -1,30 +1,17 @@
-import { useQuery } from '@apollo/client'
-import { getQuestionsQuery } from '../src/queries/question'
-import Preloader from '../components/Preloader'
-
-export default function Home() {
-
-  const { loading, data, error } = useQuery(getQuestionsQuery);
-
-  if(loading){
-    return <Preloader />
-  }
-
-  if(error){
-    return M.toast({ html: error.message });
-  }
-
+const About = () => {
   return (
-    <div className='container'>
-      <h2>Questions</h2>
-      <ul className="collection">
-        {data.questions.map(q => <li className='collection-item blue-text' key={q._id}>
-          {q.title}
-          <span className="secondary-content red-text">
-            {q.user.name}
-          </span>
-        </li>)}
-      </ul>
-    </div>
+      <div className='container'>
+          <h3>NextOverlow</h3>
+          <p className="flow-text">
+              Nextjs | GraphQL | Apollo | MongoDB | Materialize
+          </p>
+          <span className="helper-text">Frontend it boring. Might make it some other time.</span>
+          <hr />
+          <strong>
+              NextOverlow &copy; 2020
+          </strong>
+      </div>
   )
 }
+
+export default About
