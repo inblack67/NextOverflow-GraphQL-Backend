@@ -8,7 +8,7 @@ const CommentSchema = new Schema({
     question: {
         type: Schema.ObjectId,
         ref: 'Question',
-        required: [true, 'Which Question owns this comment?']
+        required: [true, 'Which question this answer belongs to?']
     },
     user: {
         type: Schema.ObjectId,

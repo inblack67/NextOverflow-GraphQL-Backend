@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 require('colors');
 
-export const connectDB = async () => {
+exports.connectDB = async () => {
     if (mongoose.connection.readyState === 1) {
         return;
     }

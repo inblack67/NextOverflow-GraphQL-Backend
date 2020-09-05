@@ -6,19 +6,33 @@ type Answer {
   _id: ID!
   content: String!
   createdAt: String!
-  user: String!
+  question: Question!
+  user: User!
 }
 
 type Comment {
   _id: ID!
   content: String!
   createdAt: String!
-  user: String!
+  question: ID!
+  user: User!
 }
 
 type Mutation {
+  """Add Answer"""
+  addAnswer(content: String, question: ID): Answer!
+
+  """Add Comment"""
+  addComment(content: String, question: ID): Comment!
+
   """Add Question"""
   addQuestion(description: String, tags: String, title: String): Question!
+
+  """Delete Answer"""
+  deleteAnswer(id: ID): Answer
+
+  """Delete Comment"""
+  deleteComment(id: ID): Comment
 
   """Delete Question"""
   deleteQuestion(id: ID): Question
@@ -32,6 +46,12 @@ type Mutation {
   """Register"""
   register(email: String, name: String, password: String): User!
 
+  """Update Answer"""
+  updateAnswer(content: String, id: ID): Answer
+
+  """Update Comment"""
+  updateComment(content: String, id: ID): Comment
+
   """Update Question"""
   updateQuestion(description: String, id: ID, tags: String, title: String): Question
 }
@@ -39,6 +59,12 @@ type Mutation {
 type Query {
   """Get Logged In User"""
   getMe: User!
+
+  """Get All Answers Of A Question"""
+  questionAnswers(question: ID): [Answer!]!
+
+  """Get All Comments Of A Question"""
+  questionComments(question: ID): [Comment!]!
 
   """Get All Questions"""
   questions: [Question!]!
@@ -49,6 +75,8 @@ type Query {
 
 type Question {
   _id: ID!
+  answers: [Answer!]!
+  comments: [Comment!]!
   createdAt: String!
   description: String!
   tags: String!

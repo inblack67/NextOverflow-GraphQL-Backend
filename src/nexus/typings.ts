@@ -32,18 +32,22 @@ export interface NexusGenRootTypes {
     _id: string; // ID!
     content: string; // String!
     createdAt: string; // String!
-    user: string; // String!
+    question: NexusGenRootTypes['Question']; // Question!
+    user: NexusGenRootTypes['User']; // User!
   }
   Comment: { // root type
     _id: string; // ID!
     content: string; // String!
     createdAt: string; // String!
-    user: string; // String!
+    question: string; // ID!
+    user: NexusGenRootTypes['User']; // User!
   }
   Mutation: {};
   Query: {};
   Question: { // root type
     _id: string; // ID!
+    answers: NexusGenRootTypes['Answer'][]; // [Answer!]!
+    comments: NexusGenRootTypes['Comment'][]; // [Comment!]!
     createdAt: string; // String!
     description: string; // String!
     tags: string; // String!
@@ -73,29 +77,41 @@ export interface NexusGenFieldTypes {
     _id: string; // ID!
     content: string; // String!
     createdAt: string; // String!
-    user: string; // String!
+    question: NexusGenRootTypes['Question']; // Question!
+    user: NexusGenRootTypes['User']; // User!
   }
   Comment: { // field return type
     _id: string; // ID!
     content: string; // String!
     createdAt: string; // String!
-    user: string; // String!
+    question: string; // ID!
+    user: NexusGenRootTypes['User']; // User!
   }
   Mutation: { // field return type
+    addAnswer: NexusGenRootTypes['Answer']; // Answer!
+    addComment: NexusGenRootTypes['Comment']; // Comment!
     addQuestion: NexusGenRootTypes['Question']; // Question!
+    deleteAnswer: NexusGenRootTypes['Answer'] | null; // Answer
+    deleteComment: NexusGenRootTypes['Comment'] | null; // Comment
     deleteQuestion: NexusGenRootTypes['Question'] | null; // Question
     login: NexusGenRootTypes['User']; // User!
     logout: NexusGenRootTypes['User'] | null; // User
     register: NexusGenRootTypes['User']; // User!
+    updateAnswer: NexusGenRootTypes['Answer'] | null; // Answer
+    updateComment: NexusGenRootTypes['Comment'] | null; // Comment
     updateQuestion: NexusGenRootTypes['Question'] | null; // Question
   }
   Query: { // field return type
     getMe: NexusGenRootTypes['User']; // User!
+    questionAnswers: NexusGenRootTypes['Answer'][]; // [Answer!]!
+    questionComments: NexusGenRootTypes['Comment'][]; // [Comment!]!
     questions: NexusGenRootTypes['Question'][]; // [Question!]!
     users: NexusGenRootTypes['User'][]; // [User!]!
   }
   Question: { // field return type
     _id: string; // ID!
+    answers: NexusGenRootTypes['Answer'][]; // [Answer!]!
+    comments: NexusGenRootTypes['Comment'][]; // [Comment!]!
     createdAt: string; // String!
     description: string; // String!
     tags: string; // String!
@@ -114,10 +130,24 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    addAnswer: { // args
+      content?: string | null; // String
+      question?: string | null; // ID
+    }
+    addComment: { // args
+      content?: string | null; // String
+      question?: string | null; // ID
+    }
     addQuestion: { // args
       description?: string | null; // String
       tags?: string | null; // String
       title?: string | null; // String
+    }
+    deleteAnswer: { // args
+      id?: string | null; // ID
+    }
+    deleteComment: { // args
+      id?: string | null; // ID
     }
     deleteQuestion: { // args
       id?: string | null; // ID
@@ -131,11 +161,27 @@ export interface NexusGenArgTypes {
       name?: string | null; // String
       password?: string | null; // String
     }
+    updateAnswer: { // args
+      content?: string | null; // String
+      id?: string | null; // ID
+    }
+    updateComment: { // args
+      content?: string | null; // String
+      id?: string | null; // ID
+    }
     updateQuestion: { // args
       description?: string | null; // String
       id?: string | null; // ID
       tags?: string | null; // String
       title?: string | null; // String
+    }
+  }
+  Query: {
+    questionAnswers: { // args
+      question?: string | null; // ID
+    }
+    questionComments: { // args
+      question?: string | null; // ID
     }
   }
 }

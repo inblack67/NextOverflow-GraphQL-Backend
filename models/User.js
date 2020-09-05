@@ -45,14 +45,29 @@ UserSchema.pre('save', async function (next) {
     next();
 });
 
-// cascade delete
 UserSchema.pre('remove', async function (next) {
     await this.model('Question').deleteMany({ user: this._id });
+    await this.model('Answer').deleteMany({ user: this._id });
+    await this.model('Comment').deleteMany({ user: this._id });
     next();
 });
 
 UserSchema.virtual('questions', {
     ref: 'Question',
+    localField: '_id',
+    foreignField: 'user',
+    justOne: false
+});
+
+UserSchema.virtual('answers', {
+    ref: 'Answer',
+    localField: '_id',
+    foreignField: 'user',
+    justOne: false
+});
+
+UserSchema.virtual('comments', {
+    ref: 'Comment',
     localField: '_id',
     foreignField: 'user',
     justOne: false

@@ -27,6 +27,31 @@ const QuestionSchema = new Schema({
         type: Date,
         default: Date.now()
     },
+},
+    {
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
+    }
+);
+
+QuestionSchema.pre('remove', async function (next) {
+    await this.model('Answer').deleteMany({ question: this._id });
+    await this.model('Comment').deleteMany({ question: this._id });
+    next();
+});
+
+QuestionSchema.virtual('answers', {
+    ref: 'Answer',
+    localField: '_id',
+    foreignField: 'question',
+    justOne: false
+});
+
+QuestionSchema.virtual('comments', {
+    ref: 'Comment',
+    localField: '_id',
+    foreignField: 'question',
+    justOne: false
 });
 
 module.exports = models.Question || model('Question', QuestionSchema);

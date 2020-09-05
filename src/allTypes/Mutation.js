@@ -1,8 +1,12 @@
 import { mutationType, stringArg, idArg } from '@nexus/schema';
 import UserModel from '../../models/User';
+import AnswerModel from '../../models/Answer';
 import QuestionModel from '../../models/Question';
+import CommentModel from '../../models/Comment';
 import { User } from './User';
 import { Question } from './Question';
+import { Answer } from './Answer';
+import { Comment } from './Comment';
 import { serialize } from 'cookie';
 import asyncHandler from '../../middlewares/asyncHandler'
 import ErrorResponse from '../errorResponse';
@@ -12,6 +16,39 @@ export const Mutation = mutationType({
     definition(t) {
 
         t.typeName = 'Mutations';
+
+        t.field('addComment', {
+            type: Comment,
+            description: 'Add Comment',
+            args: { content: stringArg(), question: idArg() },
+            resolve: asyncHandler(
+                async (_, { content, question }, ctx) => {
+                    const isAuthenticated = await isProtected(ctx);
+                    if (!isAuthenticated) {
+                        throw new ErrorResponse('Not Auth!!', 401);
+                    }
+                    const createdComment = await CommentModel.create({ content, question, user: ctx.req.user._id });
+                    const newComment = await CommentModel.findById(createdComment._id).populate(['user']);
+                    return newComment;
+                }
+            )
+        })
+        t.field('addAnswer', {
+            type: Answer,
+            description: 'Add Answer',
+            args: { content: stringArg(), question: idArg() },
+            resolve: asyncHandler(
+                async (_, { content, question }, ctx) => {
+                    const isAuthenticated = await isProtected(ctx);
+                    if (!isAuthenticated) {
+                        throw new ErrorResponse('Not Auth!!', 401);
+                    }
+                    const createdAnswer = await AnswerModel.create({ content, question, user: ctx.req.user._id });
+                    const newAnswer = await AnswerModel.findById(createdAnswer._id).populate(['user', 'question']);
+                    return newAnswer;
+                }
+            )
+        })
 
         t.field('addQuestion', {
             type: Question,
@@ -23,8 +60,79 @@ export const Mutation = mutationType({
                     if (!isAuthenticated) {
                         throw new ErrorResponse('Not Auth!!', 401);
                     }
-                    const newQuestion = await QuestionModel.create({ title, description, tags: tags || 'none', user: ctx.req.user._id });
+                    const createdQuestion = await QuestionModel.create({ title, description, tags: tags || 'none', user: ctx.req.user._id });
+                    const newQuestion = QuestionModel.findById(createdQuestion._id).populate(['user', 'comment']);
                     return newQuestion;
+                }
+            )
+        });
+
+        t.field('updateComment', {
+            type: Comment,
+            description: 'Update Comment',
+            nullable: true,
+            args: { id: idArg(), content: stringArg({ nullable: true }) },
+            resolve: asyncHandler(
+                async (parent, args, ctx) => {
+
+                    const isAuthenticated = await isProtected(ctx);
+                    if (!isAuthenticated) {
+                        throw new ErrorResponse('Not Auth!!', 401);
+                    }
+
+                    const comment = await CommentModel.findById(args.id);
+
+                    if (!comment) {
+                        throw new ErrorResponse('Resource not found', 404);
+                    }
+
+                    if (comment.user.toString() !== ctx.req.user._id.toString()) {
+                        throw new ErrorResponse('Not Auth!!', 401);
+                    }
+
+                    let body = {};
+
+                    if (args.content) {
+                        body.content = args.content;
+                    }
+
+                    const updatedComment = await CommentModel.findByIdAndUpdate(args.id, body, { new: true }).populate(['user']);
+                    console.log(updatedComment);
+                    return updatedComment;
+                }
+            )
+        });
+        t.field('updateAnswer', {
+            type: Answer,
+            description: 'Update Answer',
+            nullable: true,
+            args: { id: idArg(), content: stringArg({ nullable: true }) },
+            resolve: asyncHandler(
+                async (parent, args, ctx) => {
+
+                    const isAuthenticated = await isProtected(ctx);
+                    if (!isAuthenticated) {
+                        throw new ErrorResponse('Not Auth!!', 401);
+                    }
+
+                    const answer = await AnswerModel.findById(args.id);
+
+                    if (!answer) {
+                        throw new ErrorResponse('Resource not found', 404);
+                    }
+
+                    if (answer.user.toString() !== ctx.req.user._id.toString()) {
+                        throw new ErrorResponse('Not Auth!!', 401);
+                    }
+
+                    let body = {};
+
+                    if (args.content) {
+                        body.content = args.content;
+                    }
+
+                    const updatedAnswer = await AnswerModel.findByIdAndUpdate(args.id, body, { new: true }).populate(['user', 'question']);
+                    return updatedAnswer;
                 }
             )
         });
@@ -44,7 +152,7 @@ export const Mutation = mutationType({
 
                     const question = await QuestionModel.findById(args.id);
 
-                    if(!question){
+                    if (!question) {
                         throw new ErrorResponse('Resource not found', 404);
                     }
 
@@ -66,12 +174,67 @@ export const Mutation = mutationType({
                         body.tags = args.tags;
                     }
 
-                    const updatedQuestion = await QuestionModel.findByIdAndUpdate(args.id, body, { new: true });
+                    const updatedQuestion = await QuestionModel.findByIdAndUpdate(args.id, body, { new: true }).populate('user');
                     return updatedQuestion;
                 }
             )
         });
 
+
+        t.field('deleteComment', {
+            type: Comment,
+            description: 'Delete Comment',
+            nullable: true,
+            args: { id: idArg() },
+            resolve: asyncHandler(
+                async (parent, { id }, ctx) => {
+
+                    const isAuthenticated = await isProtected(ctx);
+                    if (!isAuthenticated) {
+                        throw new ErrorResponse('Not Auth!!', 401);
+                    }
+
+                    const comment = await CommentModel.findById(id);
+
+                    if (!comment) {
+                        throw new ErrorResponse('Resource not found', 404);
+                    }
+
+                    if (comment.user.toString() !== ctx.req.user._id.toString()) {
+                        throw new ErrorResponse('Not Auth!!', 401);
+                    }
+
+                    return await CommentModel.findByIdAndDelete(id)
+                }
+            )
+        });
+        t.field('deleteAnswer', {
+            type: Answer,
+            description: 'Delete Answer',
+            nullable: true,
+            args: { id: idArg() },
+            resolve: asyncHandler(
+                async (parent, { id }, ctx) => {
+
+                    const isAuthenticated = await isProtected(ctx);
+                    if (!isAuthenticated) {
+                        throw new ErrorResponse('Not Auth!!', 401);
+                    }
+
+                    const answer = await AnswerModel.findById(id);
+
+                    if (!answer) {
+                        throw new ErrorResponse('Resource not found', 404);
+                    }
+
+                    if (answer.user.toString() !== ctx.req.user._id.toString()) {
+                        throw new ErrorResponse('Not Auth!!', 401);
+                    }
+
+                    return await AnswerModel.findByIdAndDelete(id)
+                }
+            )
+        });
 
         t.field('deleteQuestion', {
             type: Question,
@@ -87,6 +250,10 @@ export const Mutation = mutationType({
                     }
 
                     const question = await QuestionModel.findById(id);
+
+                    if (!question) {
+                        throw new ErrorResponse('Resource not found', 404);
+                    }
 
                     if (question.user.toString() !== ctx.req.user._id.toString()) {
                         throw new ErrorResponse('Not Auth!!', 401);

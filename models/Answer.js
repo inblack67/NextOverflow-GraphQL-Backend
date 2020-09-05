@@ -11,6 +11,11 @@ const AnswerSchema = new Schema({
         ref: 'User',
         required: [true, 'Who is the creator of this Answer?']
     },
+    question: {
+        type: Schema.ObjectId,
+        ref: 'Question',
+        required: [true, 'Which question this answer belongs to?']
+    },
     createdAt: {
         type: Date,
         default: Date.now()
