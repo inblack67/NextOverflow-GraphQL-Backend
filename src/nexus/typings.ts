@@ -57,6 +57,7 @@ export interface NexusGenRootTypes {
   User: { // root type
     _id: string; // ID!
     answers?: NexusGenRootTypes['Answer'][] | null; // [Answer!]
+    comments?: NexusGenRootTypes['Comment'][] | null; // [Comment!]
     createdAt: string; // String!
     email: string; // String!
     name: string; // String!
@@ -103,7 +104,10 @@ export interface NexusGenFieldTypes {
     updateQuestion: NexusGenRootTypes['Question'] | null; // Question
   }
   Query: { // field return type
+    answer: NexusGenRootTypes['Answer']; // Answer!
+    comment: NexusGenRootTypes['Comment']; // Comment!
     getMe: NexusGenRootTypes['User']; // User!
+    question: NexusGenRootTypes['Question']; // Question!
     questionAnswers: NexusGenRootTypes['Answer'][]; // [Answer!]!
     questionComments: NexusGenRootTypes['Comment'][]; // [Comment!]!
     questions: NexusGenRootTypes['Question'][]; // [Question!]!
@@ -122,6 +126,7 @@ export interface NexusGenFieldTypes {
   User: { // field return type
     _id: string; // ID!
     answers: NexusGenRootTypes['Answer'][] | null; // [Answer!]
+    comments: NexusGenRootTypes['Comment'][] | null; // [Comment!]
     createdAt: string; // String!
     email: string; // String!
     name: string; // String!
@@ -179,6 +184,15 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    answer: { // args
+      id?: string | null; // ID
+    }
+    comment: { // args
+      id?: string | null; // ID
+    }
+    question: { // args
+      id?: string | null; // ID
+    }
     questionAnswers: { // args
       question?: string | null; // ID
     }

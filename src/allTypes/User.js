@@ -1,5 +1,6 @@
 import { objectType } from '@nexus/schema';
 import { Answer } from './Answer';
+import { Comment } from './Comment';
 import { Question } from './Question';
 
 export const User = objectType({
@@ -14,6 +15,10 @@ export const User = objectType({
         });
         t.list.field('answers', {
             type: Answer,
+            nullable: true
+        });
+        t.list.field('comments', {
+            type: Comment,
             nullable: true
         });
         t.string('createdAt');

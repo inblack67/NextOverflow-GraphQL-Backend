@@ -42,12 +42,54 @@ export const Query = queryType({
             )
         })
 
+        t.field('answer', {
+            type: Answer,
+            description: 'Get Single Answer',
+            args: {
+                id: idArg()
+            },
+            resolve: asyncHandler(
+                async (_, { id }) => {
+                    const answer = await AnswerModel.findById(id).populate(['user', 'question']);
+                    return answer;
+                }
+            )
+        })
+
+        t.field('comment', {
+            type: Comment,
+            description: 'Get Single Comment',
+            args: {
+                id: idArg()
+            },
+            resolve: asyncHandler(
+                async (_, { id }) => {
+                    const comment = await CommentModel.findById(id).populate(['user']);
+                    return comment;
+                }
+            )
+        })
+
+        t.field('question', {
+            type: Question,
+            description: 'Get Single Question',
+            args: {
+                id: idArg()
+            },
+            resolve: asyncHandler(
+                async (_, { id }) => {
+                    const question = await QuestionModel.findById(id).populate(['user', 'comments', 'answers']);
+                    return question;
+                }
+            )
+        })
+
         t.list.field('questions', {
             type: Question,
             description: 'Get All Questions',
             resolve: asyncHandler(
                 async () => {
-                    const questions = await QuestionModel.find().populate(['user', 'comments']);
+                    const questions = await QuestionModel.find().populate(['user', 'comments', 'answers']);
                     return questions;
                 }
             )
