@@ -6,7 +6,10 @@ query{
     title
     description
     _id,
-    user
+    user{
+      name,
+      _id
+    }
     createdAt
   }
 }

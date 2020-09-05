@@ -1,9 +1,8 @@
 const withPWA = require('next-pwa');
-const withCSS = require('@zeit/next-css');
 
-module.exports = withPWA(withCSS({
+module.exports = withPWA({
     pwa: {
         disable: process.env.NODE_ENV !== 'production',
         dest: 'public'
     }
-}));
+});
